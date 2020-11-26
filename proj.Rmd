@@ -15,7 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 real_estate<-read.csv("Real estate.csv", header=TRUE)
 real_estate<-real_estate[,-1]
-names(real_estate)[1]<-"transction_date"
+real_estate <- real_estate[complete.cases(real_estate),]
+
+names(real_estate)[1]<-"transaction_date"
 names(real_estate)[2]<-"house_age"
 names(real_estate)[3]<-"distance_to_the_nearest_MRT_station"
 names(real_estate)[4]<-"number_of_convenience_stores"
@@ -23,16 +25,41 @@ names(real_estate)[5]<-"latitude"
 names(real_estate)[6]<-"longitude"
 names(real_estate)[7]<-"house_price_of_unit_area"
 
+
+real_estate <- real_estate[order(real_estate$latitude,real_estate$longitude),]
 summary(real_estate)
-estate.lm<-lm(house_price_of_unit_area <- transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude)
+estate.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude,data=real_estate)
+
+summary(estate.lm)
+
+estate2.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude, data=real_estate)
+summary(estate2.lm)
+
+# Unit Normal Scaling things to do
+#s1<-sqrt(sum((x1-mean(x1))^2)/(n-1))
+#s2<-sqrt(sum((x1-mean(x2))^2)/(n-1))
+#sy<-sqrt(sum((y-mean(y))^2)/(n-1))
+
+#z1<-(x1-mean(x1))/s1
+#z2<-(x2-mean(x2))/s2
+#ys<-(y-mean(y))/sy
+
+#LifeSRModel<-lm(ys~z1+z2-1)
+#LifeSRModel$coefficients
+
+#multicollinearity
+library(faraway)
+vif(estate2.lm) # all of them less than 10 
+
+resid(estate2.lm)
+rstandard(estate2.lm)
+rstudent(estate2.lm)
+plot(estate2.lm)
+plot(x1,resid(LifeExpModel))
+plot(x2,resid(LifeExpModel))
+residtable<-cbind(resid(LifeExpModel),
+                  rstandard(LifeExpModel), rstudent(LifeExpModel))
+summary(table.b16)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
