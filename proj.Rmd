@@ -1,0 +1,38 @@
+---
+title: "STAT350"
+author: "Hyungtae"
+date: "20/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r}
+real_estate<-read.csv("Real estate.csv", header=TRUE)
+real_estate<-real_estate[,-1]
+names(real_estate)[1]<-"transction_date"
+names(real_estate)[2]<-"house_age"
+names(real_estate)[3]<-"distance_to_the_nearest_MRT_station"
+names(real_estate)[4]<-"number_of_convenience_stores"
+names(real_estate)[5]<-"latitude"
+names(real_estate)[6]<-"longitude"
+names(real_estate)[7]<-"house_price_of_unit_area"
+
+summary(real_estate)
+estate.lm<-lm(house_price_of_unit_area <- transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
