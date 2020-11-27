@@ -25,8 +25,6 @@ names(real_estate)[5]<-"latitude"
 names(real_estate)[6]<-"longitude"
 names(real_estate)[7]<-"house_price_of_unit_area"
 
-
-real_estate <- real_estate[order(real_estate$latitude,real_estate$longitude),]
 summary(real_estate)
 estate.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude,data=real_estate)
 
@@ -55,11 +53,37 @@ resid(estate2.lm)
 rstandard(estate2.lm)
 rstudent(estate2.lm)
 plot(estate2.lm)
-plot(x1,resid(LifeExpModel))
-plot(x2,resid(LifeExpModel))
-residtable<-cbind(resid(LifeExpModel),
-                  rstandard(LifeExpModel), rstudent(LifeExpModel))
-summary(table.b16)
+
+library(ggmap)
+longitude<-real_estate$longitude
+latitude<-real_estate$latitude
+price<-real_estate$house_price_of_unit_area
+locations<-cbind(longitude,latitude)
+library(tidyverse)
+locations<-as.tibble(locations)
+library(sf)
+library(mapview)
+locations_sf<-st_as_sf(locations,coords=c("longitude","latitude"),crs=4326)
+
+
+locations_price<-cbind(locations,price)
+locations_price$indicator<-0
+locations_price$indicator<-floor(locations_price$price/10)
+locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
+mapview(locations_sf,zcol= "price", at = seq(0,120,20),legend=TRUE)
+
+#Differentiating newtaipei and taipei
+new_taipei<-c(36,229,345,284,213,337,316,26,53,206,245,261,280,329,267,305,119,368,254,399,347,37,
+              61,243,409,352,370,402,63,296,354,21,366,93,84,353,388,235,389,303,395,250,348,256,
+              117,233,59,177,181,332,171,49,90,385,410,330,232,195,149,383,60,293,310,230,94,331,252,56)
+new_taipei_estate<-real_estate[(new_taipei),]
+locations_newtaipei_price<-locations_price[(new_taipei),]
+locations_sf<-st_as_sf(locations_newtaipei_price,coords=c("longitude","latitude"),crs=4326)
+mapview(locations_sf)
+real_estate$newtaipei<-0
+real_estate[(new_taipei),8]<-1
+
+
 ```
 
 
