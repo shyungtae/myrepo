@@ -35,21 +35,9 @@ summary(estate.lm)
 estate2.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude, data=real_estate)
 summary(estate2.lm)
 
-# Unit Normal Scaling things to do
-#s1<-sqrt(sum((x1-mean(x1))^2)/(n-1))
-#s2<-sqrt(sum((x1-mean(x2))^2)/(n-1))
-#sy<-sqrt(sum((y-mean(y))^2)/(n-1))
-
-#z1<-(x1-mean(x1))/s1
-#z2<-(x2-mean(x2))/s2
-#ys<-(y-mean(y))/sy
-
-#LifeSRModel<-lm(ys~z1+z2-1)
-#LifeSRModel$coefficients
-
 #multicollinearity
 library(faraway)
-vif(estate2.lm) # all of them less than 10 
+vif(estate.lm) # all of them less than 10 
 
 resid(estate2.lm)
 rstandard(estate2.lm)
@@ -93,8 +81,12 @@ real_estate[(bitan),9]<-1
 real_estate$west<-0
 real_estate[(west),10]<-1
 
+real_estate$house_price_of_unit_area<-log(real_estate$house_price_of_unit_area)
+
 estate.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude + newtaipei,data=real_estate)
 
+
+#log transformation and sqrt transformation
 summary(estate.lm)
 
 library(MASS)
