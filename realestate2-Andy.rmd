@@ -1,0 +1,240 @@
+---
+title: "Real_estate"
+author: "Andy Liang"
+date: "02/11/2020"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(faraway)
+library(caret)
+library(MASS)
+library(ggplot2)
+library(GGally)
+library(car)
+```
+
+```{r}
+real_est=read_csv("Real estate.csv")
+```
+#Renaming variables for accessibility and removing the observation number from the dataset
+```{r}
+
+real_est=rename(real_est,"TransactionDate"="X1 transaction date","HouseAge"="X2 house age","DistanceMRT"="X3 distance to the nearest MRT station","NumConStores"="X4 number of convenience stores","Latitude"="X5 latitude","Longitude"="X6 longitude","HousePriceUnitArea"="Y house price of unit area")
+head(real_est)
+
+summary(real_est)
+
+#renaming our data and getting a glimpse of what our data looks like. We see that we don't have any missing values.
+```
+
+
+
+
+#Adding new variables
+```{r}
+
+#Im going to introduce 3 new variables; Convenient_Store_Val which represents the value of a sqrft/number of stores nearby,Public_Transportation_Val which represents the value of sqrft/distance away from the MRT, and House_Age_Val which represents the value of price/house age 
+
+Convenient_Store_Val=real_est$HousePriceUnitArea/real_est$NumConStores
+Public_Transportation_Val=real_est$HousePriceUnitArea/real_est$DistanceMRT
+House_Age_Val=real_est$HousePriceUnitArea/real_est$HouseAge
+
+
+#replacing all infinity values with NA
+is.na(Convenient_Store_Val) = sapply(Convenient_Store_Val,is.infinite)
+is.na(Public_Transportation_Val) = sapply(Public_Transportation_Val,is.infinite)
+is.na(House_Age_Val) = sapply(House_Age_Val,is.infinite)
+
+#replacing all NA values with 0
+Convenient_Store_Val[which(is.na(Convenient_Store_Val))]=0
+Public_Transportation_Val[which(is.na(Public_Transportation_Val))]=0
+House_Age_Val[which(is.na(House_Age_Val))]=0
+
+
+
+#column bind
+real_est=cbind(real_est,Convenient_Store_Val,Public_Transportation_Val,House_Age_Val)
+
+head(real_est)
+
+```
+
+
+
+
+#Pairs plot to check if a linear model is appropriate
+```{r}
+real_est2=real_est[,-c(1)]
+ggcorr(real_est2,label=TRUE,size=2.5)
+#Looking at the correlation plot, We suspect that there's multicollinearity as Longitude and DistanceMRT has a relatively strong correlation of -0.8
+```
+
+
+
+
+#DataSplitting
+```{r}
+
+set.seed(4123)
+nsamples=ceiling(0.8*length(real_est$HousePriceUnitArea)) #number of samples = round up to nearest integer after taking 80% of the rows of the dataset
+
+training_samps=sample(c(1:length(real_est$HousePriceUnitArea)),nsamples) #sample numbers from 1 to total number of rows in the dataset nsamp times.
+
+training_samps=sort(training_samps) #sort the randomly sampled numbers in ascending order
+
+train_data = real_est[training_samps, ] #subset all the rows in training_samps to train data.
+
+test_data = real_est[-training_samps, ] #the remaining rows goes to test data
+
+
+train.mod <- lm(HousePriceUnitArea~TransactionDate+HouseAge+DistanceMRT+NumConStores+Latitude+Longitude + Convenient_Store_Val+Public_Transportation_Val+House_Age_Val,data=train_data )
+summary(train.mod)
+
+preds <- predict(train.mod,test_data) 
+
+
+#The model summary says that the variable longitude is statistically insignificant given that the other predicting variables are in the model. So we should drop the longitude variable. And additionally it seems like our new variable makes sense in the model.
+
+```
+
+
+
+#Using stepwise regression to determine the best subsets regression model
+```{r}
+train.model=lm(HousePriceUnitArea ~ 1,data=train_data)
+step(train.model,direction="both",scope=formula(train.mod))
+
+#according to the stepwise regression, the best subsets model doesn't include the longitude variable
+```
+
+#Linear model without the Longitude variable nor the House_Age_Val
+```{r}
+train.mod2=lm(HousePriceUnitArea ~ TransactionDate + HouseAge + DistanceMRT + NumConStores + Latitude + Public_Transportation_Val +Convenient_Store_Val ,data=train_data )
+summary(train.mod2)
+
+```
+
+
+
+#Residual Analysis
+```{r}
+
+plot(train.mod2,which = 1)
+plot(train.mod2,which = 2)
+plot(train.mod2,which = 5)
+plot(train.mod2,which = 4)
+
+
+#Looking at the residuals vs fitted values, there seems to be an increase in the spread of the residuals along the x axis. This suggests that we should apply a transformation to the dependent variable
+
+
+#Looking at the Normal Q-Q plot, the distribution seems to meet the normality assumption.
+
+
+#Looking at the Residuals vs Leverage Plot, point 271, and 276 has high leverage and high studentized residual value meaning that it's poorly fitted by our model. We should consider removing this point from our model.
+
+
+#Looking at the cook's distance plot it says that point 271 and point 276 is highly influential since it has a cooks distance greater than 0.5
+
+
+```
+
+
+#checking VIFs
+```{r}
+vif(train.mod2)
+#No signs of multicollinearity as none of the variables' VIF are > 10
+```
+
+
+#Transformation of the dependent variable
+```{r}
+box_cox_transformation = boxcox(train.mod2)
+lambda = box_cox_transformation$x[which(box_cox_transformation$y==max(box_cox_transformation$y))]
+lambda
+
+range(box_cox_transformation$x[box_cox_transformation$y > max(box_cox_transformation$y)-qchisq(0.95,1)/2])
+
+#Box-Cox transformation says the best estimate of lambda is 0.34 but we can round to 0.5 since it's in the the 95% CI which is a quartic transformation.
+
+
+train.mod3=lm(sqrt(HousePriceUnitArea)~TransactionDate + HouseAge + DistanceMRT + NumConStores + Latitude + Public_Transportation_Val +Convenient_Store_Val,data=train_data)
+summary(train.mod3)
+
+#we see an improvement in r square and the adjusted r square. 
+```
+
+
+#Residual analysis of the transformed model
+```{r}
+
+plot(train.mod3,which = 1)
+plot(train.mod3,which = 2)
+plot(train.mod3,which = 5)
+plot(train.mod3,which = 4)
+
+#The spread of the residuals seem to be more constant now after the square root transformation.The points of the Normal Q-Q plot has also improved, they're slightly closer to the line.
+```
+
+
+#influence plot to help us get a closer look at the potential outliers.
+```{r}
+influencePlot(train.mod3)
+
+#We will remove points 114,149,276 and 271 as they have very high studentized residuals.
+```
+
+
+#removing the three outliers
+```{r}
+train_data=filter(train_data,!(No %in% c("149","114","271","276") ))
+```
+
+
+#linear model without the 3 points
+```{r}
+train.mod4 = lm((HousePriceUnitArea)^(1/2)~TransactionDate + HouseAge + DistanceMRT + NumConStores + Latitude + Public_Transportation_Val +Convenient_Store_Val,data=train_data)
+summary(train.mod4)
+
+```
+#residual Analysis
+```{r}
+plot(train.mod4)
+influencePlot(train.mod4)
+```
+
+
+
+```{r}
+
+preds = predict(train.mod4,test_data) 
+
+plot(test_data$HousePriceUnitArea,preds)
+abline(c(0,1))
+
+R2(preds,test_data$HousePriceUnitArea)
+RMSE(preds,test_data$HousePriceUnitArea)
+MAE(preds,test_data$HousePriceUnitArea)
+```
+
+#HouseAge + DistanceMRT + NumConStores Public_Transportation_Val Convenient_Store_Val
+```{r}
+library(shades)
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=HousePriceUnitArea))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("House Price Per Unit Area") + brightness(scale_color_distiller(), scalefac(0.90))
+
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=HouseAge))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("House Age")+ brightness(scale_color_distiller(), scalefac(0.90))
+
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=DistanceMRT))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("Distance away from Nearest MRT")+ brightness(scale_color_distiller(), scalefac(0.90))
+
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=NumConStores))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("Number of Convenant Stores Nearby")+ brightness(scale_color_distiller(), scalefac(0.90))
+
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=Public_Transportation_Val))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("Values Public Transportation ")+ brightness(scale_color_distiller(), scalefac(0.90))
+
+ggplot(data=train_data,mapping=aes(x=Latitude,y=Longitude,color=Convenient_Store_Val))+geom_point(alpha=0.2,size=4,shape=19)+ggtitle("Doesn't Value Convienant Stores")+ brightness(scale_color_distiller(), scalefac(0.90))
+```
+
+
+
+
