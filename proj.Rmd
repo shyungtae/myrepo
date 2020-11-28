@@ -25,6 +25,8 @@ names(real_estate)[5]<-"latitude"
 names(real_estate)[6]<-"longitude"
 names(real_estate)[7]<-"house_price_of_unit_area"
 
+pairs(real_estate[,2:7])
+
 summary(real_estate)
 estate.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude,data=real_estate)
 
@@ -52,7 +54,7 @@ vif(estate2.lm) # all of them less than 10
 resid(estate2.lm)
 rstandard(estate2.lm)
 rstudent(estate2.lm)
-plot(estate2.lm)
+plot(estate.lm)
 
 library(ggmap)
 longitude<-real_estate$longitude
@@ -70,7 +72,7 @@ locations_price<-cbind(locations,price)
 locations_price$indicator<-0
 locations_price$indicator<-floor(locations_price$price/10)
 locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
-mapview(locations_sf,zcol= "price", at = seq(0,120,20),legend=TRUE)
+mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
 
 #Differentiating newtaipei and taipei
 new_taipei<-c(36,229,345,284,213,337,316,26,53,206,245,261,280,329,267,305,119,368,254,399,347,37,
@@ -83,7 +85,21 @@ mapview(locations_sf)
 real_estate$newtaipei<-0
 real_estate[(new_taipei),8]<-1
 
+bitan<-c(378,327,406,279,320,372,28,154,288)
+west<-c(270,249,201,248,376,308,355,205,283,311,52,367,392,408,185)
+real_estate$bitan<-0
+real_estate[(bitan),9]<-1
 
+real_estate$west<-0
+real_estate[(west),10]<-1
+
+estate.lm<-lm(house_price_of_unit_area ~ transaction_date + house_age + distance_to_the_nearest_MRT_station + number_of_convenience_stores + latitude + longitude + newtaipei,data=real_estate)
+
+summary(estate.lm)
+
+library(MASS)
+step.model<- stepAIC(estate.lm,direction="both",track=FALSE)
+summary(step.model)
 ```
 
 
