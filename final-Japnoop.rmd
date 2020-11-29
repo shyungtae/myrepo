@@ -11,6 +11,9 @@ library(tidyverse)
 library(caret)
 library(car)
 library(olsrr)
+library(ggmap)
+library(sf)
+library(mapview)
 ```
 
 #Reading/importing the data
@@ -23,13 +26,33 @@ RealEstate=read.csv('Real estate.csv')
 RealEstate=rename(RealEstate,c('HousePriceOfUnitArea'='Y.house.price.of.unit.area','TransactionDate'='X1.transaction.date','HouseAge'='X2.house.age','DistanceToMRT'='X3.distance.to.the.nearest.MRT.station','NumberOfConStores'='X4.number.of.convenience.stores','Latitude'='X5.latitude','Longitude'='X6.longitude'))
 ```
 
-#Introducing a new data point
+#Introducing a new explanatory variable
 ```{r}
 HousePriceDueToMRT=RealEstate$HousePriceOfUnitArea/RealEstate$DistanceToMRT
 #I introduced a new variable which shows the price of the house of unit area due to the how far it is to the MRT Station
 
 RealEstate = cbind(RealEstate,HousePriceDueToMRT)
 #binding the new data point to the dataset
+```
+
+#Map View
+```{r}
+longitude<-RealEstate$Longitude
+latitude<-RealEstate$Latitude
+priceToMRT<-RealEstate$HousePriceDueToMRT
+price<-RealEstate$HousePriceOfUnitArea
+
+locations<-cbind(longitude,latitude)
+locations<-as.tibble(locations)
+
+locations_price<-cbind(locations,price,priceToMRT)
+locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
+
+#Mapview of real estate by price
+mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
+
+#Mapview of real estate by price to Distance to MRT ratio
+mapview(locations_sf,zcol= "priceToMRT",legend=TRUE)
 ```
 
 #Cross Validation
