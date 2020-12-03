@@ -26,6 +26,13 @@ RealEstate=read.csv('Real estate.csv')
 RealEstate=rename(RealEstate,c('HousePriceOfUnitArea'='Y.house.price.of.unit.area','TransactionDate'='X1.transaction.date','HouseAge'='X2.house.age','DistanceToMRT'='X3.distance.to.the.nearest.MRT.station','NumberOfConStores'='X4.number.of.convenience.stores','Latitude'='X5.latitude','Longitude'='X6.longitude'))
 ```
 
+#Adding new datapoints
+```{r}
+#j<-c(415,2013,20,4548,0,24.94846,121,4955,70)
+#k<-c(416,2013,10,40,7,24.9676,121.5408,15)
+#RealEstate<-rbind(RealEstate,j,k)
+```
+
 #Introducing a new explanatory variable
 ```{r}
 HousePriceDueToMRT=RealEstate$HousePriceOfUnitArea/RealEstate$DistanceToMRT
