@@ -28,9 +28,9 @@ RealEstate=rename(RealEstate,c('HousePriceOfUnitArea'='Y.house.price.of.unit.are
 
 #Adding new datapoints
 ```{r}
-#j<-c(415,2013,20,4548,0,24.94846,121,4955,70)
-#k<-c(416,2013,10,40,7,24.9676,121.5408,15)
-#RealEstate<-rbind(RealEstate,j,k)
+j<-c(415,2013,20,4548,0,24.94846,121.4955,70)
+k<-c(416,2013,10,40,7,24.9676,121.5408,15)
+RealEstate<-rbind(RealEstate,j,k)
 ```
 
 #Introducing a new explanatory variable
@@ -74,7 +74,7 @@ Train=RealEstate[TrainSamples, ]
 
 Test=RealEstate[-TrainSamples, ]
 
-TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude + HousePriceDueToMRT, data=RealEstate)
+TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude + HousePriceDueToMRT, data=Train)
 
 summary(TrainLM)
 
@@ -101,8 +101,16 @@ plot(model.TrainLM, which = 4)
 
 #The Residuals vs Leverage plot shows that points 20 and 276 have Cook's distance of more than 0.5 so they are influential points.
 
-#The Cook's Distance plot shows that 271 has a pretty high value of about 0.26 but it is not more than 0.5 so it is not influential, but points 20 and 276 are. 
+#The Cook's Distance plot shows that 271 has a pretty high value of about 0.26 but it is not more than 0.5 so it is not influential, but points 20 and 276 are. So we are going to remove 20 and 276.
 ```
+
+
+##Getting rid of the outliers
+```{r}
+Train=filter(Train,!(No %in% c("20","276") ))
+
+```
+
 
 #Checking for collinearity and multicollinearity
 ```{r}
@@ -125,15 +133,9 @@ summary(ln.TrainLM)
 plot(ln.TrainLM)
 influencePlot(ln.TrainLM)
 
-#We remove points 114 and 149 because they have a studentized residual of more than 3 so they are considered outliers.  All the Cook's distances are less than 0.5 so there are no influential points.
+#We do not remove any points.
 ```
 
-#Getting rid of the outliers
-```{r}
-Train=Train[-c(114,149),]
-
-#Got rid of the 2 points because the skewed the data too much
-```
 
 #Model after removing all the ouliers
 ```{r}
@@ -151,7 +153,8 @@ ols_step_both_p(ln.TrainLM2)
 #Analysis of the predicted model
 ```{r}
 preds=predict(ln.TrainLM2,Test)
-plot(Test$HousePriceOfUnitArea,preds)
+plot(Test$HousePriceOfUnitArea,exp(preds),main="Prediction vs Actual Values")
+abline(coef = c(0,1))
 
 R2(preds,Test$HousePriceOfUnitArea)
 RMSE(preds,Test$HousePriceOfUnitArea)
