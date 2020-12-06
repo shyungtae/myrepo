@@ -81,7 +81,7 @@ summary(TrainLM)
 
 #Model without longitude
 ```{r}
-model.TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+model.TrainLM=lm(HousePriceOfUnitArea ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
 
 summary(model.TrainLM)
 
@@ -98,7 +98,7 @@ plot(model.TrainLM, which = 4)
 #The points fall along the reference line for the Normal Q-Q plot so the normality assumption is reasonable.
 
 
-#The Cook's Distance plot shows that 271 has a pretty high value of about 0.26 but it is not more than 0.5 so it is not influential.
+#The Cook's Distance plot shows that 271 has a pretty high value of about 0.20 but it is not more than 0.5 so it is not influential.
 ```
 
 
@@ -112,11 +112,16 @@ vif(model.TrainLM)
 
 #Transformaion of the model
 ```{r}
-ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+
+root.TrainLm=lm(sqrt(HousePriceOfUnitArea) ~  HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+
 
 summary(ln.TrainLM)
+summary(root.TrainLm)
 anova(ln.TrainLM)
-#The log transformation makes it so the residual standard error goes down and the r and r-squared both increase. This all means that the model fits better. 
+
+#The log transformation makes it so the residual standard error goes down and the r and r-squared both increase. This all means that the model fits better. Log transformation does better job than square root transformation.
 ```
 
 #Looking for outliers/leverage points
@@ -124,6 +129,8 @@ anova(ln.TrainLM)
 plot(ln.TrainLM)
 influencePlot(ln.TrainLM)
 
+plot(root.TrainLm)
+influencePlot(root.TrainLm)
 #We do not remove any points.
 ```
 
