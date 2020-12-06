@@ -5,6 +5,12 @@ date: "November 20, 2020"
 output: html_document
 ---
 
+```{r, include=FALSE}
+   # add this chunk to end of mycode.rmd
+   file.rename(from="final-Japnoop.rmd", 
+               to="README.md")
+```
+
 
 ```{r}
 library(tidyverse)
@@ -79,7 +85,7 @@ summary(TrainLM)
 #In the summary of the TrainLM we see that longitude and TransactionDate variables have a high p-value. This high p-value is significant because it shows that we should get rid of the longitude and TransactionDate variable. 
 ```
 
-#Model without longitude
+#Model without longitude and transaction date
 ```{r}
 model.TrainLM=lm(HousePriceOfUnitArea ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
 
