@@ -46,20 +46,18 @@ ggcorr(RealEstate,label=TRUE,size=2.5)
 ```{r}
 longitude<-RealEstate$Longitude
 latitude<-RealEstate$Latitude
-#priceToMRT<-RealEstate$HousePriceDueToMRT
+
 price<-RealEstate$HousePriceOfUnitArea
 
 locations<-cbind(longitude,latitude)
 locations<-as.tibble(locations)
 
-locations_price<-cbind(locations,price)#,priceToMRT)
+locations_price<-cbind(locations,price)
 locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
 
 #Mapview of real estate by price
 mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
 
-#Mapview of real estate by price to Distance to MRT ratio
-#mapview(locations_sf,zcol= "priceToMRT",legend=TRUE)
 ```
 
 #Cross Validation
@@ -99,17 +97,10 @@ plot(model.TrainLM, which = 4)
 
 #The points fall along the reference line for the Normal Q-Q plot so the normality assumption is reasonable.
 
-#The Residuals vs Leverage plot shows that points 20 and 276 have Cook's distance of more than 0.5 so they are influential points.
 
-#The Cook's Distance plot shows that 271 has a pretty high value of about 0.26 but it is not more than 0.5 so it is not influential, but points 20 and 276 are. So we are going to remove 20 and 276.
+#The Cook's Distance plot shows that 271 has a pretty high value of about 0.26 but it is not more than 0.5 so it is not influential.
 ```
 
-
-##Getting rid of the outliers
-```{r}
-Train=filter(Train,!(No %in% c("20","276")))
-
-```
 
 
 #Checking for collinearity and multicollinearity
@@ -121,7 +112,7 @@ vif(model.TrainLM)
 
 #Transformaion of the model
 ```{r}
-ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + HousePriceDueToMRT, data=Train)
+ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
 
 summary(ln.TrainLM)
 anova(ln.TrainLM)
