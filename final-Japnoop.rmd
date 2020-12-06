@@ -76,7 +76,7 @@ TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + N
 
 summary(TrainLM)
 
-#In the summary of the TrainLM we see that longitude is the only variable with a high p-value. This high p-value is significant because it shows that we should get rid of the longitude variable. 
+#In the summary of the TrainLM we see that longitude and TransactionDate variables have a high p-value. This high p-value is significant because it shows that we should get rid of the longitude and TransactionDate variable. 
 ```
 
 #Model without longitude
