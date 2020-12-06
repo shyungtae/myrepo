@@ -1,4 +1,153 @@
-# myrepo
-testing my setup
+---
+title: "Real Estate Analysis"
+author: "Japnoop Grewal"
+date: "November 20, 2020"
+output: rmarkdown::github_document
+---
 
-"Hello WOrld"
+
+```{r}
+library(tidyverse)
+library(caret)
+library(car)
+library(olsrr)
+library(ggplot2)
+library(ggmap)
+library(GGally)
+library(sf)
+library(mapview)
+```
+
+#Reading/importing the data
+```{r}
+RealEstate=read.csv('Real estate.csv')
+```
+
+#Renaming the data
+```{r}
+RealEstate=rename(RealEstate,c('HousePriceOfUnitArea'='Y.house.price.of.unit.area','TransactionDate'='X1.transaction.date','HouseAge'='X2.house.age','DistanceToMRT'='X3.distance.to.the.nearest.MRT.station','NumberOfConStores'='X4.number.of.convenience.stores','Latitude'='X5.latitude','Longitude'='X6.longitude'))
+```
+
+#Adding new datapoints
+```{r}
+j<-c(415,2013,20,4548,0,24.94846,121.4955,70)
+k<-c(416,2013,10,40,7,24.9676,121.5408,15)
+RealEstate<-rbind(RealEstate,j,k)
+```
+
+#Pairs plot to check if a linear model is appropriate
+```{r}
+ggcorr(RealEstate,label=TRUE,size=2.5)
+#Looking at the correlation plot, We suspect that there's multicollinearity as Longitude and DistanceMRT has a relatively strong correlation of -0.8
+```
+
+
+#Map View
+```{r}
+longitude<-RealEstate$Longitude
+latitude<-RealEstate$Latitude
+
+price<-RealEstate$HousePriceOfUnitArea
+
+locations<-cbind(longitude,latitude)
+locations<-as.tibble(locations)
+
+locations_price<-cbind(locations,price)
+locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
+
+#Mapview of real estate by price
+mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
+
+```
+
+#Cross Validation
+```{r}
+set.seed(10)
+samplesize=ceiling(0.8 * nrow(RealEstate))
+
+TrainSamples=sample(seq_len(nrow(RealEstate)),samplesize)
+TrainSamples=sort(TrainSamples)
+
+Train=RealEstate[TrainSamples, ]
+
+Test=RealEstate[-TrainSamples, ]
+
+TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude, data=Train)
+
+summary(TrainLM)
+
+#In the summary of the TrainLM we see that longitude and TransactionDate variables have a high p-value. This high p-value is significant because it shows that we should get rid of the longitude and TransactionDate variable. 
+```
+
+#Model without longitude
+```{r}
+model.TrainLM=lm(HousePriceOfUnitArea ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+
+summary(model.TrainLM)
+
+#This model is better than the other one because all the p-values are relatively small.
+```
+
+#Residual Analysis
+```{r}
+plot(model.TrainLM)
+plot(model.TrainLM, which = 4)
+
+#The Residuals vs Fitted plot shows that the spread seems to be increasing and points 114,271,313 might be outliers.
+
+#The points fall along the reference line for the Normal Q-Q plot so the normality assumption is reasonable.
+
+
+#The Cook's Distance plot shows that 271 has a pretty high value of about 0.20 but it is not more than 0.5 so it is not influential.
+```
+
+
+
+#Checking for collinearity and multicollinearity
+```{r}
+vif(model.TrainLM)
+
+#The VIF values are all smaller than 5 so there is no sign of multicollinearity. 
+```
+
+#Transformaion of the model
+```{r}
+ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+
+root.TrainLm=lm(sqrt(HousePriceOfUnitArea) ~  HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+
+
+summary(ln.TrainLM)
+summary(root.TrainLm)
+anova(ln.TrainLM)
+
+#The log transformation makes it so the residual standard error goes down and the r and r-squared both increase. This all means that the model fits better. Log transformation does better job than square root transformation.
+```
+
+#Looking for outliers/leverage points
+```{r}
+plot(ln.TrainLM)
+influencePlot(ln.TrainLM)
+
+plot(root.TrainLm)
+influencePlot(root.TrainLm)
+#We do not remove any points.
+```
+
+#Variable Selection
+```{r}
+ols_step_both_p(ln.TrainLM)
+#The stepwise regression added all the variables and got rid of none so that means that all the variables in the model are significant. 
+```
+
+#Analysis of the predicted model
+```{r}
+preds=predict(ln.TrainLM,Test)
+plot(Test$HousePriceOfUnitArea,exp(preds),main="Prediction vs Actual Values")
+abline(coef = c(0,1))
+
+R2(preds,Test$HousePriceOfUnitArea)
+RMSE(preds,Test$HousePriceOfUnitArea)/sd(Test$HousePriceOfUnitArea)
+MAE(preds,Test$HousePriceOfUnitArea)
+summary(ln.TrainLM)
+```
