@@ -11,7 +11,9 @@ library(tidyverse)
 library(caret)
 library(car)
 library(olsrr)
+library(ggplot2)
 library(ggmap)
+library(GGally)
 library(sf)
 library(mapview)
 ```
@@ -33,33 +35,31 @@ k<-c(416,2013,10,40,7,24.9676,121.5408,15)
 RealEstate<-rbind(RealEstate,j,k)
 ```
 
-#Introducing a new explanatory variable
+#Pairs plot to check if a linear model is appropriate
 ```{r}
-HousePriceDueToMRT=RealEstate$HousePriceOfUnitArea/RealEstate$DistanceToMRT
-#I introduced a new variable which shows the price of the house of unit area due to the how far it is to the MRT Station
-
-RealEstate = cbind(RealEstate,HousePriceDueToMRT)
-#binding the new data point to the dataset
+ggcorr(RealEstate,label=TRUE,size=2.5)
+#Looking at the correlation plot, We suspect that there's multicollinearity as Longitude and DistanceMRT has a relatively strong correlation of -0.8
 ```
+
 
 #Map View
 ```{r}
 longitude<-RealEstate$Longitude
 latitude<-RealEstate$Latitude
-priceToMRT<-RealEstate$HousePriceDueToMRT
+#priceToMRT<-RealEstate$HousePriceDueToMRT
 price<-RealEstate$HousePriceOfUnitArea
 
 locations<-cbind(longitude,latitude)
 locations<-as.tibble(locations)
 
-locations_price<-cbind(locations,price,priceToMRT)
+locations_price<-cbind(locations,price)#,priceToMRT)
 locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
 
 #Mapview of real estate by price
 mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
 
 #Mapview of real estate by price to Distance to MRT ratio
-mapview(locations_sf,zcol= "priceToMRT",legend=TRUE)
+#mapview(locations_sf,zcol= "priceToMRT",legend=TRUE)
 ```
 
 #Cross Validation
@@ -74,7 +74,7 @@ Train=RealEstate[TrainSamples, ]
 
 Test=RealEstate[-TrainSamples, ]
 
-TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude + HousePriceDueToMRT, data=Train)
+TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude, data=Train)
 
 summary(TrainLM)
 
@@ -83,7 +83,7 @@ summary(TrainLM)
 
 #Model without longitude
 ```{r}
-model.TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + HousePriceDueToMRT, data=Train)
+model.TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
 
 summary(model.TrainLM)
 
@@ -107,7 +107,7 @@ plot(model.TrainLM, which = 4)
 
 ##Getting rid of the outliers
 ```{r}
-Train=filter(Train,!(No %in% c("20","276") ))
+Train=filter(Train,!(No %in% c("20","276")))
 
 ```
 
@@ -124,7 +124,7 @@ vif(model.TrainLM)
 ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + HousePriceDueToMRT, data=Train)
 
 summary(ln.TrainLM)
-
+anova(ln.TrainLM)
 #The log transformation makes it so the residual standard error goes down and the r and r-squared both increase. This all means that the model fits better. 
 ```
 
@@ -151,4 +151,5 @@ abline(coef = c(0,1))
 R2(preds,Test$HousePriceOfUnitArea)
 RMSE(preds,Test$HousePriceOfUnitArea)/sd(Test$HousePriceOfUnitArea)
 MAE(preds,Test$HousePriceOfUnitArea)
+summary(ln.TrainLM)
 ```
