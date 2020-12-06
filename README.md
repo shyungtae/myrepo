@@ -1,153 +1,41 @@
----
-title: "Real Estate Analysis"
-author: "Japnoop Grewal"
-date: "November 20, 2020"
-output: rmarkdown::github_document
----
+# Real Estate: STAT 350 fall 2020 Final Project Group15
 
-
-```{r}
-library(tidyverse)
-library(caret)
-library(car)
-library(olsrr)
-library(ggplot2)
-library(ggmap)
-library(GGally)
-library(sf)
-library(mapview)
-```
-
-#Reading/importing the data
-```{r}
-RealEstate=read.csv('Real estate.csv')
-```
-
-#Renaming the data
-```{r}
-RealEstate=rename(RealEstate,c('HousePriceOfUnitArea'='Y.house.price.of.unit.area','TransactionDate'='X1.transaction.date','HouseAge'='X2.house.age','DistanceToMRT'='X3.distance.to.the.nearest.MRT.station','NumberOfConStores'='X4.number.of.convenience.stores','Latitude'='X5.latitude','Longitude'='X6.longitude'))
-```
-
-#Adding new datapoints
-```{r}
-j<-c(415,2013,20,4548,0,24.94846,121.4955,70)
-k<-c(416,2013,10,40,7,24.9676,121.5408,15)
-RealEstate<-rbind(RealEstate,j,k)
-```
-
-#Pairs plot to check if a linear model is appropriate
-```{r}
-ggcorr(RealEstate,label=TRUE,size=2.5)
-#Looking at the correlation plot, We suspect that there's multicollinearity as Longitude and DistanceMRT has a relatively strong correlation of -0.8
-```
-
-
-#Map View
-```{r}
-longitude<-RealEstate$Longitude
-latitude<-RealEstate$Latitude
-
-price<-RealEstate$HousePriceOfUnitArea
-
-locations<-cbind(longitude,latitude)
-locations<-as.tibble(locations)
-
-locations_price<-cbind(locations,price)
-locations_sf<-st_as_sf(locations_price,coords=c("longitude","latitude"),crs=4326)
-
-#Mapview of real estate by price
-mapview(locations_sf,zcol= "price", at = seq(0,120,60),legend=TRUE)
-
-```
-
-#Cross Validation
-```{r}
-set.seed(10)
-samplesize=ceiling(0.8 * nrow(RealEstate))
-
-TrainSamples=sample(seq_len(nrow(RealEstate)),samplesize)
-TrainSamples=sort(TrainSamples)
-
-Train=RealEstate[TrainSamples, ]
-
-Test=RealEstate[-TrainSamples, ]
-
-TrainLM=lm(HousePriceOfUnitArea ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + Longitude, data=Train)
-
-summary(TrainLM)
-
-#In the summary of the TrainLM we see that longitude and TransactionDate variables have a high p-value. This high p-value is significant because it shows that we should get rid of the longitude and TransactionDate variable. 
-```
-
-#Model without longitude
-```{r}
-model.TrainLM=lm(HousePriceOfUnitArea ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
-
-summary(model.TrainLM)
-
-#This model is better than the other one because all the p-values are relatively small.
-```
-
-#Residual Analysis
-```{r}
-plot(model.TrainLM)
-plot(model.TrainLM, which = 4)
-
-#The Residuals vs Fitted plot shows that the spread seems to be increasing and points 114,271,313 might be outliers.
-
-#The points fall along the reference line for the Normal Q-Q plot so the normality assumption is reasonable.
-
-
-#The Cook's Distance plot shows that 271 has a pretty high value of about 0.20 but it is not more than 0.5 so it is not influential.
-```
+### Table of Contents
+   - [Abstract](#abstract)
+   - [Introduction](#introduction)
+   - [Data Description](#data-description)
+   - [Data Source](#data-source)
+   - [Methods](#methods)
+   - [Conclusion](#conclusion)
 
 
 
-#Checking for collinearity and multicollinearity
-```{r}
-vif(model.TrainLM)
 
-#The VIF values are all smaller than 5 so there is no sign of multicollinearity. 
-```
+### Abstract
 
-#Transformaion of the model
-```{r}
-ln.TrainLM=lm(log(HousePriceOfUnitArea) ~ HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
-
-root.TrainLm=lm(sqrt(HousePriceOfUnitArea) ~  HouseAge + DistanceToMRT + NumberOfConStores + Latitude, data=Train)
+This project presents a statistical analysis of real estate data of New Taipei, Taiwan. The primary interest is in estimating the association of transaction date, house age, distance to the MRT station, longitude, number of present convenience stores on house price of unit area. We built a regression model using cross-validation to identify linear relationship between the house price of unit area and other predictor variables in the time frame of 2012 August to 2013 July. The model identified the linear relationship between the house price and distance to the MRT(Mass Rapid Transit) station, latitude, number of present convenience stores, but not longitude and transaction date. This model does account for 60 percent of its variability.
 
 
-summary(ln.TrainLM)
-summary(root.TrainLm)
-anova(ln.TrainLM)
 
-#The log transformation makes it so the residual standard error goes down and the r and r-squared both increase. This all means that the model fits better. Log transformation does better job than square root transformation.
-```
+### Introduction
 
-#Looking for outliers/leverage points
-```{r}
-plot(ln.TrainLM)
-influencePlot(ln.TrainLM)
 
-plot(root.TrainLm)
-influencePlot(root.TrainLm)
-#We do not remove any points.
-```
 
-#Variable Selection
-```{r}
-ols_step_both_p(ln.TrainLM)
-#The stepwise regression added all the variables and got rid of none so that means that all the variables in the model are significant. 
-```
 
-#Analysis of the predicted model
-```{r}
-preds=predict(ln.TrainLM,Test)
-plot(Test$HousePriceOfUnitArea,exp(preds),main="Prediction vs Actual Values")
-abline(coef = c(0,1))
+### Data Description
 
-R2(preds,Test$HousePriceOfUnitArea)
-RMSE(preds,Test$HousePriceOfUnitArea)/sd(Test$HousePriceOfUnitArea)
-MAE(preds,Test$HousePriceOfUnitArea)
-summary(ln.TrainLM)
-```
+This dataset Real estate.csv is a record of the transactions of real estates in Taiwan from August 2012 to July 2013. Each single datapoint is a transaction of an estate with properties that describe it. The original dataset consists of a single response variable, House price of unit area and 6 predictor variables: X1 Transaction Date, X2 houseage, X3 Distance to nearest MRT, X4 Number of convenience stores, X5 Latitude, and X6 Longitude. In this project we introduced 2 new data points. (not complete i dont know why we chose those specific points, prof wanted us to state why we chose the datapoints we did)
+
+### Data Source
+
+“Real estate price prediction” from kaggle by Bruce:(https://www.kaggle.com/quantbruce/real-estate-price-prediction)
+
+
+### Methods
+In order to determine what the best model for the given data set was, we had to use multiple different analysis tools and techniques. One of the first methods we used was the pairs plot. This plot was used to determine if there was a linear relation, whether it be positive or negative, between any two given variables. It also told us if there was any strong correlation between two independent variables that we might have to watch out for. After we determined that a linear model was appropriate to use we used cross validation inorder to use some data to predict the rest. We used a sampling size of 80% for the training set which meant the remaining 20% went to the test set. Taking the training set we made a model and tested it against the test set. This method helps us determine the accuracy of the model and whether it is considered to be adequate or not
+
+
+
+### Conclusion
+
+We discovered longitude and transaction date are not significant as their p-values were larger than 0.05. Transaction date must be a crucial factor determining house price, but due to insufficient amount of data, the model does not capture it as significant. Distance to the MRT station, house age, latitude, number of present convenience stores have linear relationship with the house price of the unit area. Residual analyses showed there are no presence of outliers in the data set, although we introduced two outliers, one having high cost, the other having low cost. However, adjusted R-Squared value of the model is 0.6 and Root mean square error(RMSE) divided by the standard deviation equals 2.69, which does not adequately explain the variability of the data set.
