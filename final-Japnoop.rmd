@@ -136,23 +136,15 @@ influencePlot(ln.TrainLM)
 #We do not remove any points.
 ```
 
-
-#Model after removing all the ouliers
-```{r}
-ln.TrainLM2=lm(log(HousePriceOfUnitArea) ~ TransactionDate + HouseAge + DistanceToMRT + NumberOfConStores + Latitude + HousePriceDueToMRT, data=Train)
-
-summary(ln.TrainLM2)
-```
-
 #Variable Selection
 ```{r}
-ols_step_both_p(ln.TrainLM2)
+ols_step_both_p(ln.TrainLM)
 #The stepwise regression added all the variables and got rid of none so that means that all the variables in the model are significant. 
 ```
 
 #Analysis of the predicted model
 ```{r}
-preds=predict(ln.TrainLM2,Test)
+preds=predict(ln.TrainLM,Test)
 plot(Test$HousePriceOfUnitArea,exp(preds),main="Prediction vs Actual Values")
 abline(coef = c(0,1))
 
