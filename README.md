@@ -39,25 +39,27 @@ The data set does not provide concise definition of its variables. We do not kno
 ### Methods and Results
 First method we used was the pairs plot. Pairs plot verified linear relationship and correlation between any two given variables.
 
-#Pairs Plot
+# Pairs Plot
 ![](/images/pairsplot.png)
 
-#Correlation Plot
+# Correlation Plot
 ![](/images/corplot.png)
 
 
 The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable.In our case, longitude and transaction had p-values greater than 0.05. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
 
+# Cook's Distance
 ![](/images/cook's_distance.png)
 
 We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent. More residual analysis on transformation can be found in Appendix B.
 
+# Log Transformation Residuals
 ![](/images/logTransformation,train,resd.png)
 
 
 For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE). Figures can be found in Appendix C.
 
-
+# Predicted vs Actucal
 ![](/images/Predicted_vs_Actual.png)
 
 
