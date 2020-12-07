@@ -47,7 +47,12 @@ First method we used was the pairs plot. Pairs plot verified linear relationship
 ![](/images/corplot.png)
 
 
-The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable.In our case, longitude and transaction had p-values greater than 0.05. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
+The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable.In our case, longitude and transaction had p-values greater than 0.05.
+
+### Summary Table
+![](/images/summary_table1.png)
+
+Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
 
 ### Cook's Distance
 ![](/images/cook's_distance.png)
@@ -85,4 +90,8 @@ We discovered longitude and transaction date are not significant as their p-valu
 ![](/images/residual_analysis,sq.png)
 
 ### Appendix C
+
+### Stepwise summary
+![](/images/stepwise.png)
+
 
