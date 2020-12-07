@@ -11,7 +11,7 @@
    - [Conclusion](#conclusion)
 
 
-![](map.png_images)
+![](/images/map.png)
 
 ### Abstract
 
