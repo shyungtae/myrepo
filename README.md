@@ -58,8 +58,9 @@ The pairs plot showed that linear model was appropriate, and we decided to imple
 We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent.
 
 <p align="center">
-#Residual vs Fitted for Trained Data set
+
 ![](/images/Residual_vs_Fitted,Train.png)
+#Residual vs Fitted for Trained Data set
 
 For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE).
 
