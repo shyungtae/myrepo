@@ -36,15 +36,17 @@ The dataset “Real estate.csv” is a record of the transactions of real estate
 
 The data set does not provide concise definition of its variables. We do not know the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection. We would provide more accurate interpretation of the result we found with concise definition of the variables.
 
-### Methods and REsults
+### Methods and Results
 First method we used was the pairs plot. Pairs plot verified linear relationship and correlation between any two given variables.
 
+#Pairs Plot
 ![](/images/pairsplot.png)
 
+#Correlation Plot
 ![](/images/corplot.png)
 
 
-The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
+The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable.In our case, longitude and transaction had p-values greater than 0.05. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
 
 ![](/images/cook's_distance.png)
 
@@ -64,19 +66,19 @@ For variable selection, the stepwise regression determined whether or not the mo
 
 We discovered longitude and transaction date are not significant as their p-values were larger than 0.05. Transaction date must be a crucial factor determining house price, but due to insufficient amount of data, the model does not capture it as significant. Distance to the MRT station, house age, latitude, number of present convenience stores have linear relationship with the house price of the unit area. Residual analyses showed there are no presence of outliers in the data set, although we introduced two outliers, one having high cost, the other having low cost. Variance inflation factor indicated that there is no presence of multicollinearity. Adjusted R-Squared value of the model is 0.63 and Root mean square error(RMSE) divided by the standard deviation equals 2.69, which does not adequately explain the variability of the data set.
 
-### Appendix
+# Appendix
 
-## APPendix A
+## APendix A
 
 ![](/images/residual_analysis,train.png)
 
 ## Appendix B
 
-# Log transformation
+### Log transformation - residual analysis
 ![](/images/residual_analysis,log.png)
 
-# Square-root transformation
-![](/images/residual_analysis,sqpng)
+### Square-root transformation - residual analysis
+![](/images/residual_analysis,sq.png)
 
 ## Appendix C
 
