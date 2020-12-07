@@ -95,4 +95,7 @@ We discovered longitude and transaction date are not significant as their p-valu
 ### Stepwise summary
 ![](/images/stepwise.png)
 
+### Appendix D
 
+codes can be found here.
+Bruce:(https://github.com/shyungtae/myrepo/blob/main/final-Japnoop.rmd)
