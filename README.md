@@ -15,13 +15,13 @@
 
 ### Abstract
 
-This project presents a statistical analysis of real estate data of New Taipei, Taiwan. The primary interest is in estimating the association of transaction date, house age, distance to the MRT(Mass Rapid Transit) station, longitude, number of present convenience stores on house price of unit area. We built a regression model using cross-validation to identify linear relationship between the house price of unit area and other predictor variables in the time frame of 2012 August to 2013 July. The model identified the linear relationship between the house price and distance to the MRT station, latitude, number of present convenience stores, but not longitude and transaction date. This model accounts for 60 percent of its variability.
+This project presents a statistical analysis of real estate data of New Taipei, Taiwan. The primary interest is in estimating the association of transaction date, house age, distance to the MRT(Mass Rapid Transit) station, longitude, number of present convenience stores on house price of unit area. We built a regression model using cross-validation to identify linear relationship between the house price of unit area and other predictor variables in the time frame of 2012 August to 2013 July. The model identified the linear relationship between the house price and distance to the MRT station, latitude, number of present convenience stores, but not longitude and transaction date. This model accounts for 63 percent of its variability.
 
 
 
 ### Introduction
 
-For this project are using the real estate data set found at https://www.kaggle.com/quantbruce/real-estate-price-prediction. On top of the given data set, we also have to introduce two additional data points. The main goal/question is to see if we can make an acceptable model to show the relationship between the given variables. We want to determine the association between the house price of unit area against the transaction date, house age, distance to nearest MRT station, number of convenience stores, latitude, and longitude. For us to find out what the best regression model for this data set is, we have to run a thorough analysis which includes cross-validation, linear model transformation, and so on.  Another question we have is: are there are any outliers in the data set? The presence of these outliers can vary the model a lot by having a significant impact on the coefficients of each estimated beta. The removal of these such points is mandatory to find the best model. The last question we have is: Are there any signs of multicollinearity? The existence of multicollinearity in the data can be detrimental to the overall linear model. Multicollinearity shows when a variable is highly correlated with any of the other variables. This is a major issue due to the fact that this can cause the coefficients of the model to sway, and it can reduce the accuracy of the estimated coefficients. 
+For this project, we are using the real estate data set found at https://www.kaggle.com/quantbruce/real-estate-price-prediction, and introduced two additional data points. The main goal is to see if we can make an acceptable model to show the relationship between the given variables. We want to determine the association between the house price of unit area against the transaction date, house age, distance to nearest MRT station, number of convenience stores, latitude, and longitude. Another question we have is: are there any outliers in the data set? The presence of these outliers can vary the model a lot by having a significant impact on the coefficients of each estimated beta. The last question we have is: Are there any signs of multicollinearity? The existence of multicollinearity in the data can be detrimental to the overall linear model. Multicollinearity shows when a variable is highly correlated with any of the other variables. This is a major issue since it can cause the coefficients of the model to sway, and it can reduce the accuracy of the estimated coefficients. 
 
 
 ### Data Description
@@ -36,7 +36,7 @@ The dataset “Real estate.csv” is a record of the transactions of real estate
 
 The data set does not provide concise definition of its variables. We do not know the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection. We would provide more accurate interpretation of the result we found with concise definition of the variables.
 
-### Methods and Results
+### Methods and REsults
 First method we used was the pairs plot. Pairs plot verified linear relationship and correlation between any two given variables.
 
 ![](/images/pairsplot.png)
@@ -44,26 +44,39 @@ First method we used was the pairs plot. Pairs plot verified linear relationship
 ![](/images/corplot.png)
 
 
-The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers.
+The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
 
 ![](/images/Cook's_Distance_2,Train.png)
 
-We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent.
-
+We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent. More residual analysis on transformation can be found in Appendix B.
 
 ![](/images/Residual_vs_Fitted,Train.png)
 
 
-For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE).
+For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE). Figures can be found in Appendix C.
 
 
 ![](/images/Predicted_vs_Actual.png)
 
 
+
 ### Conclusion
 
-We discovered longitude and transaction date are not significant as their p-values were larger than 0.05. Transaction date must be a crucial factor determining house price, but due to insufficient amount of data, the model does not capture it as significant. Distance to the MRT station, house age, latitude, number of present convenience stores have linear relationship with the house price of the unit area. Residual analyses showed there are no presence of outliers in the data set, although we introduced two outliers, one having high cost, the other having low cost. Variance inflation factor indicated that there is no presence of multicollinearity. Adjusted R-Squared value of the model is 0.6 and Root mean square error(RMSE) divided by the standard deviation equals 2.69, which does not adequately explain the variability of the data set.
+We discovered longitude and transaction date are not significant as their p-values were larger than 0.05. Transaction date must be a crucial factor determining house price, but due to insufficient amount of data, the model does not capture it as significant. Distance to the MRT station, house age, latitude, number of present convenience stores have linear relationship with the house price of the unit area. Residual analyses showed there are no presence of outliers in the data set, although we introduced two outliers, one having high cost, the other having low cost. Variance inflation factor indicated that there is no presence of multicollinearity. Adjusted R-Squared value of the model is 0.63 and Root mean square error(RMSE) divided by the standard deviation equals 2.69, which does not adequately explain the variability of the data set.
 
 ### Appendix
 
+##APPendix A
+
+![](/images/residual_analysis,train.png)
+
+##Appendix B
+
+#Log transformation
+![](/images/residual_analysis,log.png)
+
+#Square-root transformation
+![](/images/residual_analysis,sqpng)
+
+##Appendix C
 
