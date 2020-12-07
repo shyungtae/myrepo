@@ -46,11 +46,11 @@ First method we used was the pairs plot. Pairs plot verified linear relationship
 
 The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
 
-![](/images/Cook's_Distance_2,Train.png)
+![](/images/cook's_distance.png)
 
 We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent. More residual analysis on transformation can be found in Appendix B.
 
-![](/images/Residual_vs_Fitted,Train.png)
+![](/images/logTransformation,train,resd.png)
 
 
 For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE). Figures can be found in Appendix C.
@@ -66,17 +66,17 @@ We discovered longitude and transaction date are not significant as their p-valu
 
 ### Appendix
 
-##APPendix A
+## APPendix A
 
 ![](/images/residual_analysis,train.png)
 
-##Appendix B
+## Appendix B
 
-#Log transformation
+# Log transformation
 ![](/images/residual_analysis,log.png)
 
-#Square-root transformation
+# Square-root transformation
 ![](/images/residual_analysis,sqpng)
 
-##Appendix C
+## Appendix C
 
