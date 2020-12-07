@@ -6,8 +6,9 @@
    - [Abstract](#abstract)
    - [Introduction](#introduction)
    - [Data Description](#data-description)
+   - [Data Limitation](#data-limitation)
    - [Data Source](#data-source)
-   - [Methods](#methods)
+   - [Methods and Results](#methods-and-Results)
    - [Conclusion](#conclusion)
 
 
@@ -67,13 +68,15 @@ For variable selection, the stepwise regression determined whether or not the mo
 
 We discovered longitude and transaction date are not significant as their p-values were larger than 0.05. Transaction date must be a crucial factor determining house price, but due to insufficient amount of data, the model does not capture it as significant. Distance to the MRT station, house age, latitude, number of present convenience stores have linear relationship with the house price of the unit area. Residual analyses showed there are no presence of outliers in the data set, although we introduced two outliers, one having high cost, the other having low cost. Variance inflation factor indicated that there is no presence of multicollinearity. Adjusted R-Squared value of the model is 0.63 and Root mean square error(RMSE) divided by the standard deviation equals 2.69, which does not adequately explain the variability of the data set.
 
-# Appendix
+## Appendix
 
-## APendix A
+### Appendix A
+
+### Train model - residual analysis
 
 ![](/images/residual_analysis,train.png)
 
-## Appendix B
+### Appendix B
 
 ### Log transformation - residual analysis
 ![](/images/residual_analysis,log.png)
@@ -81,5 +84,5 @@ We discovered longitude and transaction date are not significant as their p-valu
 ### Square-root transformation - residual analysis
 ![](/images/residual_analysis,sq.png)
 
-## Appendix C
+### Appendix C
 
