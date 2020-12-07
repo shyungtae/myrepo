@@ -1,7 +1,7 @@
 # Real Estate: STAT 350 fall 2020 Final Project Group15
 
 ![](/images/map.png)
-map
+*Hous Price of Unit Area*
 
 ### Table of Contents
    - [Abstract](#abstract)
@@ -16,7 +16,7 @@ map
 
 ### Abstract
 
-This project presents a statistical analysis of real estate data of New Taipei, Taiwan. The primary interest is in estimating the association of transaction date, house age, distance to the MRT station, longitude, number of present convenience stores on house price of unit area. We built a regression model using cross-validation to identify linear relationship between the house price of unit area and other predictor variables in the time frame of 2012 August to 2013 July. The model identified the linear relationship between the house price and distance to the MRT(Mass Rapid Transit) station, latitude, number of present convenience stores, but not longitude and transaction date. This model accounts for 60 percent of its variability.
+This project presents a statistical analysis of real estate data of New Taipei, Taiwan. The primary interest is in estimating the association of transaction date, house age, distance to the MRT(Mass Rapid Transit) station, longitude, number of present convenience stores on house price of unit area. We built a regression model using cross-validation to identify linear relationship between the house price of unit area and other predictor variables in the time frame of 2012 August to 2013 July. The model identified the linear relationship between the house price and distance to the MRT station, latitude, number of present convenience stores, but not longitude and transaction date. This model accounts for 60 percent of its variability.
 
 
 
@@ -35,28 +35,38 @@ The dataset “Real estate.csv” is a record of the transactions of real estate
 
 ### Data Limitation 
 
-The data set does not provide concise definition of its variables. We do not know the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection.
+The data set does not provide concise definition of its variables. We do not know the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection. We would provide more accurate interpretation of the result we found with concise definition of the variables.
 
 ### Methods and Results
 First method we used was the pairs plot. Pairs plot verified linear relationship and correlation between any two given variables.
 
+<p align="center">
+#Pairs Plot
+![](/images/pairsplot.png)
+
+<p align="center">
+#Correlation plot
 ![](/images/corplot.png)
-*Correlation plot*
+
 
 The pairs plot showed that linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable. Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers.
 
+<p align="center">
+#Cook's distance for Trained Data set
 ![](/images/Cook's_Distance_2,Train.png)
-*Cook's distance for Trained Data set*
 
 We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent.
 
+<p align="center">
+#Residual vs Fitted for Trained Data set
 ![](/images/Residual_vs_Fitted,Train.png)
-*Residual vs Fitted for Trained Data set*
 
 For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE).
 
-![](/images/Predicted_vs_Actual.png)
+<p align="center">
 *Predicted vs Actual*
+![](/images/Predicted_vs_Actual.png)
+
 
 
 ### Conclusion

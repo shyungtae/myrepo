@@ -1,16 +1,9 @@
 ---
 title: "Real Estate Analysis"
-author: "Japnoop Grewal"
+author: "Japnoop Grewal, Andy Liang, Hyungtae Shim"
 date: "November 20, 2020"
 output: html_document
 ---
-
-```{r, include=FALSE}
-   # add this chunk to end of mycode.rmd
-   file.rename(from="final-Japnoop.rmd", 
-               to="README.md")
-```
-
 
 ```{r}
 library(tidyverse)
@@ -43,6 +36,9 @@ RealEstate<-rbind(RealEstate,j,k)
 
 #Pairs plot to check if a linear model is appropriate
 ```{r}
+
+pairs(RealEstate[,2:8])
+
 ggcorr(RealEstate,label=TRUE,size=2.5)
 #Looking at the correlation plot, We suspect that there's multicollinearity as Longitude and DistanceMRT has a relatively strong correlation of -0.8
 ```
@@ -96,8 +92,11 @@ summary(model.TrainLM)
 
 #Residual Analysis
 ```{r}
+par(mfrow=c(2,2))
 plot(model.TrainLM)
-plot(model.TrainLM, which = 4)
+
+par(mfrow=c(1,1))
+plot(model.TrainLM,sub.caption= "",which=4)
 
 #The Residuals vs Fitted plot shows that the spread seems to be increasing and points 114,271,313 might be outliers.
 
@@ -132,10 +131,14 @@ anova(ln.TrainLM)
 
 #Looking for outliers/leverage points
 ```{r}
+par(mfrow=c(2,2))
 plot(ln.TrainLM)
+par(mfrow=c(1,1))
 influencePlot(ln.TrainLM)
 
+par(mfrow=c(2,2))
 plot(root.TrainLm)
+par(mfrow=c(1,1))
 influencePlot(root.TrainLm)
 #We do not remove any points.
 ```
