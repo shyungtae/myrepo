@@ -24,7 +24,7 @@ This project presents a statistical analysis of real estate data of New Taipei, 
 
 ### Data Description
 
-This dataset Real estate.csv is a record of the transactions of real estates in Taiwan from August 2012 to July 2013. Each single datapoint is a transaction of an estate with properties that describe it. The original dataset consists of a single response variable, House price of unit area and 6 predictor variables: X1 Transaction Date, X2 houseage, X3 Distance to nearest MRT, X4 Number of convenience stores, X5 Latitude, and X6 Longitude. In this project we introduced 2 new data points. (not complete i dont know why we chose those specific points, prof wanted us to state why we chose the datapoints we did)
+This dataset “Real estate.csv” is a record of the transactions of real estates in Taiwan from 2012 August to 2013 July. Each single datapoint is a transaction of an estate with properties that describe it. The original dataset consists of a single response variable, House price of unit area and 6 predictor variables: X1 Transaction Date, X2 houseage, X3 Distance to nearest MRT, X4 Number of convenience stores, X5 Latitude, and X6 Longitude. In this project we introduced 2 new data points, to see if our model can identify them as outliers. The first point, 415 has a much greater house price per unit area than its nearby estates. The second point 416 represents the opposite, a much smaller house price per unit area than its surrounding estates. 
 
 ### Data Source
 
@@ -32,8 +32,7 @@ This dataset Real estate.csv is a record of the transactions of real estates in 
 
 
 ### Methods
-In order to determine what the best model for the given data set was, we had to use multiple different analysis tools and techniques. One of the first methods we used was the pairs plot. This plot was used to determine if there was a linear relation, whether it be positive or negative, between any two given variables. It also told us if there was any strong correlation between two independent variables that we might have to watch out for. After we determined that a linear model was appropriate to use we used cross validation inorder to use some data to predict the rest. We used a sampling size of 80% for the training set which meant the remaining 20% went to the test set. Taking the training set we made a model and tested it against the test set. This method helps us determine the accuracy of the model and whether it is considered to be adequate or not
-
+In order to determine what the best model for the given data set was, we had to use multiple different analysis tools and techniques. One of the first methods we used was the pairs plot. This plot was used to determine if there was a linear relation, whether it be positive or negative, between any two given variables. It also told us if there was any strong correlation between two independent variables that we might have to watch out for. After we determined that a linear model was appropriate to use, we used cross validation inorder to use some data to predict the rest. We used a sampling size of 80% for the training set which meant the remaining 20% went to the test set. Taking the training set, we made a model and tested it against the test set. This method helps us determine the accuracy of the model and whether it is considered to be adequate or not.
 
 
 ### Conclusion
