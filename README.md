@@ -21,7 +21,7 @@ This project presents a statistical analysis of real estate data of New Taipei, 
 
 ### Introduction
 
-
+For this project are using the real estate data set found at https://www.kaggle.com/quantbruce/real-estate-price-prediction. On top of the given data set, we also have to introduce two additional data points. The main goal/question is to see if we can make an acceptable model to show the relationship between the given variables. We want to determine the association between the house price of unit area against the transaction date, house age, distance to nearest MRT station, number of convenience stores, latitude, and longitude. For us to find out what the best regression model for this data set is, we have to run a thorough analysis which includes cross-validation, linear model transformation, and so on.  Another question we have is: are there are any outliers in the data set? The presence of these outliers can vary the model a lot by having a significant impact on the coefficients of each estimated beta. The removal of these such points is mandatory to find the best model. The last question we have is: Are there any signs of multicollinearity? The existence of multicollinearity in the data can be detrimental to the overall linear model. Multicollinearity shows when a variable is highly correlated with any of the other variables. This is a major issue due to the fact that this can cause the coefficients of the model to sway, and it can reduce the accuracy of the estimated coefficients. 
 
 
 ### Data Description
