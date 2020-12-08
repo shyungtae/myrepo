@@ -152,8 +152,8 @@ ols_step_both_p(ln.TrainLM)
 #Analysis of the predicted model
 ```{r}
 preds=predict(ln.TrainLM,Test)
-plot(Test$HousePriceOfUnitArea,exp(preds),main="Prediction vs Actual Values")
-abline(coef = c(0,1))
+ggplot(Test,mapping=aes(x=HousePriceOfUnitArea,y=exp(preds)))+geom_point(color= "#FC4E07")+xlab("Actual House Price Per Unit Area")+ylab("Prediction")+ggtitle("Prediction vs Actual Values")+theme(plot.title = element_text(hjust = 0.5)) + geom_abline()
+
 
 R2(preds,Test$HousePriceOfUnitArea)
 RMSE(preds,Test$HousePriceOfUnitArea)/sd(Test$HousePriceOfUnitArea)
