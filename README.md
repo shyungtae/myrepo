@@ -1,7 +1,8 @@
 # Real Estate: STAT 350 fall 2020 Final Project Group15
 
-![](/images/map.png)
 *Map view of the real estate*
+![](/images/map.png)
+
 
 ## Table of Contents
    - [Abstract](#abstract)
