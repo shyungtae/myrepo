@@ -98,5 +98,5 @@ We discovered longitude and transaction date are not significant as their p-valu
 
 ### Appendix D
 
-codes can be found here.
+Codes can be found here.
 Bruce:(https://github.com/shyungtae/myrepo/blob/main/final-Japnoop.rmd)
