@@ -70,7 +70,7 @@ We then checked for signs of multicollinearity by calculating the variance infla
 
 For variable selection, the stepwise regression determined whether or not the model should include all the predictor variables. With the finalized model, we tested with the test data set, and computed its R-squared, root mean sqaure error(RMSE) and mean absolute percentage error(MAE). Figures can be found in Appendix C.
 
-### Predicted vs Actucal
+### Predicted vs Actual
 ![](/images/Predicted_vs_Actual.png)
 
 
