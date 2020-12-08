@@ -1,8 +1,9 @@
 # Real Estate: STAT 350 fall 2020 Final Project Group15
 
-*Map view of the real estate*
+
 ![](/images/map.png)
 
+*Map view of the real estate*
 
 ## Table of Contents
    - [Abstract](#abstract)
@@ -100,3 +101,4 @@ We discovered longitude and transaction date are not significant as their p-valu
 ### Appendix D
 
 Codes can be found here.(https://github.com/shyungtae/myrepo/blob/main/final-Japnoop.rmd)
+
