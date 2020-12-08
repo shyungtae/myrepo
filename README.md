@@ -1,5 +1,7 @@
 # Real Estate: STAT 350 fall 2020 Final Project Group15
-
+- Andy Liang
+- Japnoop Grewal
+- Hyungtae Shim
 
 ![](/images/map.png)
 
@@ -61,7 +63,8 @@ Succeeding the removal of the non-significant predictor variables we performed t
 ### Cook's Distance
 ![](/images/cook's_distance.png)
 
-We then checked for any signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not find any multicollinearity. We performed log transformation as the variance was not consistent. More residual analysis on transformation can be found in Appendix B.
+We then checked for signs of multicollinearity by calculating the variance inflation factor of the model. In this model, we did not have a problem with multicollinearity as none of the variance inflation factors are greater than 10. We then applied a log transformation on the response variable to fix unequal variance. More regression diagnostics plots about the transformations can be found in Appendix B.
+
 
 ### Log Transformation Residuals
 ![](/images/logTransformation,train,resd.png)
