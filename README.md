@@ -1,7 +1,5 @@
-# Real Estate: STAT 350 fall 2020 Final Project Group15
-- Andy Liang
-- Japnoop Grewal
-- Hyungtae Shim
+# Real Estate: STAT 350 fall 2020 Final Project Group15 Andy Liang, Japnoop Grewal, Hyungtae Shim
+
 
 ![](/images/map.png)
 
