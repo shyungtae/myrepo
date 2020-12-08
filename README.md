@@ -1,6 +1,7 @@
 # Real Estate: STAT 350 fall 2020 Final Project Group15
 
 ![](/images/map.png)
+*Map view of the real estate*
 
 ## Table of Contents
    - [Abstract](#abstract)
@@ -28,7 +29,7 @@ For this project, we are using the real estate data set found at https://www.kag
 
 ## Data Description
 
-The dataset “Real estate.csv” is a record of the transactions of real estates in Taiwan from 2012 August to 2013 July. Each single datapoint is a transaction of a real estate with properties that describe it. The original dataset consists of a single response variable, House price of unit area and 6 predictor variables: X1 Transaction Date, X2 houseage, X3 Distance to nearest MRT, X4 Number of convenience stores, X5 Latitude, and X6 Longitude. In this project we introduced 2 new data points, to see if our model can identify them as outliers. The first point, 415 has a much greater house price per unit area than its nearby real estates. The second point 416 represents the opposite, a much smaller house price per unit area than its nearby real estates. 
+The dataset “Real estate.csv” is a record of the transactions of real estates New Taipei, Taiwan from 2012 August to 2013 July. Each single datapoint is a transaction of a real estate with properties that describe it. The original dataset consists of a single response variable, House price of unit area and 6 predictor variables: X1 Transaction Date, X2 houseage, X3 Distance to nearest MRT, X4 Number of convenience stores, X5 Latitude, and X6 Longitude. In this project we introduced 2 new data points, to see if our model can identify them as outliers. The first point, 415 has a much greater house price per unit area than its nearby real estates. The second point, 416 represents the opposite, a much smaller house price per unit area than its nearby real estates. 
 
 ## Data Source
 
@@ -36,10 +37,10 @@ The dataset “Real estate.csv” is a record of the transactions of real estate
 
 ## Data Limitation 
 
-The data set does not provide concise definition of its variables. We are unaware of the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection. We can provide more accurate interpretation of the result we found with concise definition of the variables.
+The dataset does not provide concise definition of its variables. We are unaware of the unit of distance for distance to MRT station and the unit of house price. We are not aware of what methods are used for data collection. We can provide more accurate interpretation of the result we found with concise definition of the variables.
 
 ## Methods and Results
-The first step was to conduct a pairs plot. Pairs plot verified linear relationship and correlation between any two given variables.
+The first step was to conduct a pairs plot. Pairs plot verified the linear relationships and correlations between any two given variables.
 
 ### Pairs Plot
 ![](/images/pairsplot.png)
@@ -48,12 +49,12 @@ The first step was to conduct a pairs plot. Pairs plot verified linear relations
 ![](/images/corplot.png)
 
 
-The pairs plot showed that the usage of a linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and the other 20% for testing. After building a model, we investigated insignificant predictor variables. If any of the given p-values for each predictor variable had a value greater than 0.05, then we removed the variable.In our case, longitude and transaction had p-values greater than 0.05.
+The pairs plot showed that the usage of a linear model was appropriate, and we decided to implement cross-validation. We used a sampling size of 80% for the training set and remaining 20% for testing. After building a model, we investigated for insignificant predictor variables.We removed the predictor variable if any of the p-values for each predictor variable had a value greater than 0.05. In our case, both the longitude and transaction had p-values greater than 0.05.
 
 ### Summary Table
 ![](/images/summary_table1.png)
 
-Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers on the trained linear model, and concluded that there are no outliers. More residual analysis can be found in Appendix A.
+Succeeding the removal of the non-significant predictor variables we performed the residual analysis for potential outliers in the trained linear model. We found that there were no evident outliers. More residual analysis can be found in Appendix A.
 
 ### Cook's Distance
 ![](/images/cook's_distance.png)
